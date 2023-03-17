@@ -1,0 +1,29 @@
+from pygame import *
+
+def main(ga,se,p1,p2):
+    init()
+    scr = display.set_mode((ga, se))
+    display.set_caption("니얼굴")
+
+    pho = image.load(p1)
+    ch1_size = pho.get_rect().size
+    ch1_width = ch1_size[0]
+    ch1_height=ch1_size[1]
+    run = True
+
+    while run:
+        for ev in event.get():
+            if ev.type == QUIT:
+                run = False
+            if ev.type == KEYDOWN:
+                if ev.key == K_LEFT:
+                    pass
+                elif ev.key == K_RIGHT:
+                    pass
+        scr.fill((255, 255, 255))
+        scr.blit(pho, (ga /2 - ch1_width / 2, se/2 - ch1_height))
+        display.update()
+
+    quit()
+
+main(300,300,"C:\\Users\\학생01\\PycharmProjects\\pythonProject\\a.png",0)
