@@ -6,14 +6,15 @@ def main(ga,se):
     init()
     scr = display.set_mode((ga, se))
     display.set_caption("니얼굴")
-    a=time.Clock
-    a.tick(60)
+    clock=time.Clock()
     phoy = image.load("C:\\Users\\학생01\\PycharmProjects\\pythonProject\\a.png")
     ch1_size = phoy.get_rect().size
     ch1_width = ch1_size[0]
     ch1_height=ch1_size[1]
-    ch1_x=ga /2 - ch1_width / 2
-    ch1_y= se/2 - ch1_height/2
+    ch1_pos=[ga /2 - ch1_width / 2,se/2 - ch1_height/2]
+    ch1_move=[0,0]
+    ch1_move_x = False
+    ch1_move_y = False
 
 
     run = True
@@ -23,12 +24,30 @@ def main(ga,se):
                 run = False
             if ev.type == KEYDOWN:
                 if ev.key == K_LEFT:
-                    ch1_x -=5
+                    ch1_move[0] = -5
+                    ch1_move_x = True
                 elif ev.key == K_RIGHT:
-                    ch1_x+=5
+                    ch1_move[0] = 5
+                    ch1_move_x = True
+                elif ev.key == K_DOWN:
+                    ch1_move[1] = 5
+                    ch1_move_y = True
+                elif ev.key == K_UP:
+                    ch1_move[1] = -5
+                    ch1_move_y = True
+            if ev.type == KEYUP:
+                if not key.get_pressed()[K_RIGHT]:
+                    ch1_move[0] = 0
+                    ch1_move_x = False
+                if ch1_move_y:
+                    ch1_move_y[1] =0
+                    ch1_move_y = False
         scr.fill((255, 255, 255))
-        scr.blit(phoy,(ch1_x,ch1_y))
+        scr.blit(phoy,(ch1_pos[0],ch1_pos[1]))
+        ch1_pos[0] += ch1_move[0]
+        ch1_pos[1] += ch1_move[1]
         display.update()
+        clock.tick(60)
 
     quit()
 
