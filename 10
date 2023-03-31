@@ -1,2 +1,11 @@
 print("올해 운 {0}".format("대박" if (int(input("생년을 입력하세요"))-int(input("태어난 달을 입력하세요")) +int(input("태어난 날을 입력하세요"))) % 10== 0  else  "그덕저럭"
 ""))
+
+id , pw = "화수" , "031"
+a , b =input("아이디를 입력하세요:") , input("비밍번호를 입력하세요")
+
+if id == a and pw == b:
+    print("환영합니다")
+
+else:
+    print("다시확인하세요")
