@@ -41,10 +41,12 @@ def main(ga,se):
         scr.fill((255, 255, 255))
         scr.blit(phoy,(ch1_pos[0],ch1_pos[1]))
 
-        if ch1_pos[0] < 0 and ch1_move[0]<0:
+        if ch1_pos[0] < 0 and ch1_move[0]<0 or ch1_pos[0] > (ga-ch1_width) and ch1_move[0] >0:
             ch1_move[0] = 0
-        elif ch1_pos[0] > (ga-ch1_width) and ch1_move[0] >0:
-            ch1_move[0] = 0
+
+        if ch1_pos[1] < 0 and ch1_move[1]<0 or ch1_pos[1] > (ga-ch1_width) and ch1_move[1] >0:
+            ch1_move[1] = 0
+
 
         ch1_pos[0] += ch1_move[0]
         ch1_pos[1] += ch1_move[1]
