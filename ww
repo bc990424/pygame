@@ -1,0 +1,60 @@
+import time
+
+from pygame import *
+ga , se = 600,600
+class main:
+    def start(self):
+        init()
+        self.scr = display.set_mode((ga, se))
+        display.set_caption("니얼굴")
+        self.clock = time.Clock()
+        self.phoy = image.load("C:\\Users\\학생01\\PycharmProjects\\pythonProject\\a.png")
+        self.ch1_size = self.phoy.get_rect().size
+        self.ch1_width = self.ch1_size[0]
+        self.ch1_height = self.ch1_size[1]
+        self.ch1_pos = [ga / 2 - self.ch1_width / 2, se / 2 - self.ch1_height / 2]
+        self.ch1_move = [0, 0]
+
+        self.run = True
+        self.main(self ,800,800)
+
+    def main(self, ga ,se):
+        while self.run:
+            for ev in event.get():
+                if ev.type == QUIT:
+                    self.run = False
+                if ev.type == KEYDOWN:
+                    if ev.key == K_LEFT:
+                        self.ch1_move[0] = -5
+
+                    elif ev.key == K_RIGHT:
+                        self.ch1_move[0] = 5
+
+                    elif ev.key == K_DOWN:
+                        self.ch1_move[1] = 5
+
+                    elif ev.key == K_UP:
+                        self.ch1_move[1] = -5
+                if ev.type == KEYUP:
+                    self.ch1_move[0] = 0
+                    self.ch1_move[1] = 0
+
+            self.scr.fill((255, 255, 255))
+            self.scr.blit(self.phoy, (self.ch1_pos[0], self.ch1_pos[1]))
+
+            if (self.ch1_pos[0] < 0 and self.ch1_move[0] < 0) or (self.ch1_pos[0] > (ga - self.ch1_width) and self.ch1_move[0]>0):
+                self.ch1_move[0] = 0
+
+            if (self.ch1_pos[1] < 0 and self.ch1_move[1]) < 0 or (self.ch1_pos[1]>(se - self.ch1_height ) and self.ch1_move[1]>0):
+                self.ch1_move[1] = 0
+
+            self.ch1_pos[0] += self.ch1_move[0]
+            self.ch1_pos[1] += self.ch1_move[1]
+            display.update()
+            self.clock.tick(60)
+
+        quit()
+
+
+
+main.start(main)
