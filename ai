@@ -1,91 +1,69 @@
-# Import required libraries
+import time
 import pygame
-import socket
-import select
 
-# Define game constants
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-FPS = 30
+ga, se = 600, 600
+class main:
+    def start(self):
+        pygame.init()
+        self.scr = pygame.display.set_mode((ga, se))
+        pygame.display.set_caption("니얼굴")
+        self.clock = time.Clock()
+        self.phoy = pygame.image.load("C:\\Users\\학생01\\PycharmProjects\\pythonProject\\a.png")
+        self.ch1_size = self.phoy.get_rect().size
+        self.ch1_width = self.ch1_size[0]
+        self.ch1_height = self.ch1_size[1]
+        self.ch1_pos = [ga / 2 - self.ch1_width / 2, se / 2 - self.ch1_height / 2]
+        self.ch1_move = [0, 0]
 
-# Initialize pygame and set up the display
-pygame.init()
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-clock = pygame.time.Clock()
+        self.run = True
+        self.main(self, 800, 800)
 
-# Set up the server socket
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-server_socket.bind(('localhost', 5000))
-server_socket.listen(2)
+    def main(self, ga, se):
+        while self.run:
+            for ev in pygame.event.get():
+                if ev.type == pygame.QUIT:
+                    self.run = False
+                if ev.type == pygame.KEYDOWN:
+                    if ev.key == pygame.K_LEFT:
+                        self.ch1_move[0] = -5
 
-# Set up the clients
-client_sockets = []
-client_data = {}
+                    elif ev.key == pygame.K_RIGHT:
+                        self.ch1_move[0] = 5
 
-# Set up the game state
-game_running = True
-player_scores = [0, 0]
+                    elif ev.key == pygame.K_DOWN:
+                        self.ch1_move[1] = 5
 
-# Define functions for sending and receiving data
-def send_data(sock, data):
-    """Send data to a socket"""
-    data = bytes(str(data), 'utf-8')
-    length = len(data)
-    sock.sendall(bytes(str(length), 'utf-8'))
-    sock.sendall(data)
+                    elif ev.key == pygame.K_UP:
+                        self.ch1_move[1] = -5
+                if ev.type == pygame.KEYUP:
+                    if ev.key == pygame.K_LEFT or ev.key == pygame.K_RIGHT:
+                        self.ch1_move[0] = 0
+                    if ev.key == pygame.K_UP or ev.key == pygame.K_DOWN:
+                        self.ch1_move[1] = 0
 
-def receive_data(sock):
-    """Receive data from a socket"""
-    data = b''
-    while True:
-        ready, _, _ = select.select([sock], [], [], 0.01)
-        if ready:
-            chunk = sock.recv(4096)
-            data += chunk
-            if len(chunk) < 4096:
-                break
-    return data.decode('utf-8')
+            self.scr.fill((255, 255, 255))
+            self.scr.blit(self.phoy, (self.ch1_pos[0], self.ch1_pos[1]))
 
-# Set up the game loop
-while game_running:
-    # Handle events
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            game_running = False
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                # TODO: Add code to detect shouting and send data to server
-                pass
-    
-    # Receive data from clients
-    for client_socket in client_sockets:
-        try:
-            data = receive_data(client_socket)
-            if data:
-                # TODO: Add code to update game state based on data
-                pass
-        except ConnectionResetError:
-            client_sockets.remove(client_socket)
-            del client_data[client_socket]
-    
-    # Draw game graphics
-    screen.fill(BLACK)
-    # TODO: Add code to draw game elements
-    pygame.display.update()
-    clock.tick(FPS)
-    
-    # Send game state to clients
-    for client_socket in client_sockets:
-        try:
-            # TODO: Add code to send game state to clients
-            pass
-        except ConnectionResetError:
-            client_sockets.remove(client_socket)
-            del client_data[client_socket]
+            # 캐릭터가 화면을 벗어나지 않도록 처리
+            if self.ch1_pos[0] + self.ch1_move[0] < 0:
+                self.ch1_pos[0] = 0
+            elif self.ch1_pos[0] + self.ch1_move[0] > ga - self.ch1_width:
+                self.ch1_pos[0] = ga - self.ch1_width
+            else:
+                self.ch1_pos[0] += self.ch1_move[0]
 
-# Clean up
-pygame.quit()
-server_socket.close()
+            if self.ch1_pos[1] + self.ch1_move[1] < 0:
+                self.ch1_pos[1] = 0
+            elif self.ch1_pos[1] + self.ch1_move[1] > se - self.ch1_height:
+                self.ch1_pos[1] = se - self.ch1_height
+            else:
+                self.ch1_pos[1] += self.ch1_move[1]
+
+            pygame.display.update()
+            self.clock.tick(60)
+
+        pygame.quit()
+
+
+main.start(main)
+
