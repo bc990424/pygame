@@ -1,0 +1,135 @@
+import time as ti
+from pygame import *
+import threading
+
+import socket
+ga = 800
+se = 800
+import socket
+class Main:
+  def setting(self):
+    init()
+    self.scr = display.set_mode((ga, se))
+    display.set_caption("니얼굴")
+    self.clock = time.Clock()
+    self.ch_pos = [[100,100,(255,255,255)]]
+    self.move = [0, 0]
+    self.mousepos = (0, 0)
+    self.bulletli = []
+    self.bulletspeed= 10
+    self.emshot = True
+    self.ch_hp=[]
+    self.player=1
+    self.back = True
+    self.game = True
+    self.connect =True
+    self.ch_num = 2
+    
+  def run(self):
+    img=threading.Thread(target=self.imgload)
+    img.start()
+    con = threading.Thread(target= self.net)
+    con.start()
+    while self.game:
+      for ev in event.get():
+        if ev.type == QUIT:
+          quit()
+        if ev.type == KEYDOWN:
+          if ev.key == K_LEFT:
+            self.move[0] = -5
+          if ev.key == K_RIGHT:
+            self.move[0] = 5
+          if ev.key == K_DOWN:
+            self.move[1] = 5
+          if ev.key == K_UP:
+            self.move[1] = -5
+
+        if ev.type == KEYUP:
+          self.move = [0, 0]
+
+        if ev.type == MOUSEBUTTONDOWN and ev.button == 1:
+          if len(self.bulletli) <3:
+            self.bulletli.append(self.shoot(self.ch1_pos,mouse.get_pos()))
+
+      if 0 in self.ch_hp: pass
+
+
+
+      # Keep character inside the screen
+      if self.ch1_pos[0] < 0:
+        self.ch1_pos[0] = 0
+      elif self.ch1_pos[0] > ga - 20:
+        self.ch1_pos[0] = ga - 20
+
+      if self.ch1_pos[1] < 0:
+        self.ch1_pos[1] = 0
+      elif self.ch1_pos[1] > se - 20:
+        self.ch1_pos[1] = se - 20
+      self.bu(self.bulletli,True)           #총알
+      display.update()
+      self.back=True
+      self.clock.tick(60)
+      
+      
+  def shoot(self, c,d):
+    dx = d[0] - self.ch1_pos[0]   # x좌표 차
+    dy = d[1] - self.ch1_pos[1]
+    dist = (dx ** 2 + dy ** 2) ** 0.5
+    result = [c, dx / dist, dy /dist,True]
+    return result
+
+  def imgload(self):
+    while self.game:
+      if self.back:
+        self.cls()
+        for pos,i in self.ch_pos,range(self.ch_num):
+          draw.circle(self.scr, pos[3], (int(pos[0]), int(pos[1])), 20)
+          draw.line(self.scr,(255,0,0),((pos[0]-self.ch_hp[i]*2),self.ch1_pos[1]+25),((self.ch_pos[0]+self.ch_hp[i]*2),self.pos[1]+25),5)
+        self.back = False
+  
+
+
+  def end(self,re):
+    self.game = False
+    Font =font.SysFont( "arial", 140)
+    a=Font.render("you {}".format("win!" if re else "lose..."),True,200)
+    self.cls()
+    self.scr.blit(a,[0,se/2-100])
+    #self.scr.rect(self.scr,(255,0,0),
+    display.update()
+    while not self.game:
+      for ev in event.get():
+        if ev.type == QUIT:
+          quit()
+          break
+  def cls(self):
+    self.scr.fill((255,255,255))
+    
+  def bu(self,s,ss):
+    if not s == []:
+      bu=0
+      for i in s:
+        x, y = int(i[0][0]), int(i[0][1])
+        x1, y1 = x + i[1] * 3, y + i[2] * 3
+        draw.line(self.scr, (255, 0, 0), (x, y), (x1, y1), 5)
+        s[bu][0] = [x + self.bulletspeed * i[1], y + self.bulletspeed * i[2]]
+        if x1 < 0 or x1 > ga - 20 or y < 0 or y > se - 20:
+          del s[bu]
+        if i[3]:
+          if ((self.ch2_pos[0] - x1) ** 2 + (self.ch2_pos[1] - y1) ** 2) ** 0.5 < 20:
+             self.ch2_hp -=1
+             del s[bu]
+        else:
+            if ((self.ch1_pos[0] - x1) ** 2 + (self.ch_pos[1] - y1) ** 2) ** 0.5 < 20:
+              self.ch1_hp -=1
+              del s[bu]
+        bu+=1
+
+  def net(self):
+    while self.connect:
+      pass
+
+
+m = Main()
+m.setting()
+m.run()
