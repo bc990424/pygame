@@ -1,0 +1,32 @@
+import socket
+import pickle
+import _thread
+ser=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+ser.bind(('127.0.0.1',9999))
+ser.listen()
+chi_list=[]
+play_list=[]
+
+us=1
+def a(cl,ad,pn):
+    while True:
+        try:
+            data=cl.recv(1024)
+            play_list[pn-1]=pickle.loads(data)
+            cl.
+        except: pass
+
+
+
+try:
+    while True:
+        cli,adr=ser.accept()
+        cli_list.append(cli)
+        _thread.start_new_thread(a,(chi,adr))
+        ser.send(us.encode())
+
+except:
+    print(Exception)
+finally:
+    ser.close()
+
