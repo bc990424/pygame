@@ -54,18 +54,24 @@ class Ui_MainWindow(object):
         self.date.currentIndexChanged.connect(self.act)
         self.years.currentIndexChanged.connect(self.act)
         self.mounth.currentIndexChanged.connect(self.act)
-
+        self.mounth.currentIndexChanged.connect(self.set_date)
+        self.date.addItems(map(lambda x:str(x),(range(1,31))))
         MainWindow.setCentralWidget(self.centralwidget)
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def set_date(self,month):
+    def set_date(self):
         self.date.clear()
-        self.date.addItems(map(lambda x:str(x),(range(28))))
+        print(self.mounth.currentIndex())
+        a = 29 if self.mounth.currentIndex() == 1 else 31 if self.mounth.currentIndex() in [0,2,4,6,7,9,11] else 30
+        self.date.addItems(map(lambda x: str(x),(range(1,a))))
 
     def act(self):
-        list(map(lambda x:self.re.append(x),self.result("20230911")))
-
+        self.re.clear()
+        print("20"+str(22+self.years.currentIndex())+"%02d" % (self.mounth.currentIndex()+1)+"%02d" % (self.date.currentIndex()+1))
+        try:
+            list(map(lambda x:self.re.append(x),self.result("20"+str(22+self.years.currentIndex())+"%02d" % (self.mounth.currentIndex()+1)+"%02d" % (self.date.currentIndex()+1))))
+        except: self.re.append("없음")
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
